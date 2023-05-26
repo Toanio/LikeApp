@@ -11,6 +11,11 @@ import Photos
 import PhotosUI
 
 class MainViewController: UIViewController {
+    let emtyImageView: UIImageView = {
+        var view = UIImageView()
+        view.image = UIImage(systemName: "photo.artframe")
+        return view
+    }()
     private var images = [UIImage]()
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -24,12 +29,19 @@ class MainViewController: UIViewController {
         let button = UIButton()
         button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
         button.tintColor = .green
+        button.contentMode = .scaleAspectFit
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(addButtonClicked), for: .touchUpInside)
         return button
     }()
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureView()
+        view.backgroundColor = .white
+    }
+    
+    fileprivate func configureView() {
         let stack = UIStackView(arrangedSubviews: [
             collectionView, addButton
         ])
@@ -37,12 +49,17 @@ class MainViewController: UIViewController {
         view.addSubview(stack)
         stack.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
-            make.left.right.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().inset(500)
+        }
+        view.addSubview(emtyImageView)
+        emtyImageView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.trailing.equalToSuperview()
+            make.size.equalTo(CGSize(width: view.frame.width, height: 200))
         }
         collectionView.dataSource = self
         collectionView.delegate = self
-        view.backgroundColor = .white
     }
     
     @objc func addButtonClicked() {
@@ -85,6 +102,9 @@ extension MainViewController: PHPickerViewControllerDelegate, UICollectionViewDa
             }
         }
         group.notify(queue: .main) {
+            if self.images.count != 0{
+                self.emtyImageView.isHidden = true
+            }
             self.collectionView.reloadData()
         }
     }
