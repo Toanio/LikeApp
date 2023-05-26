@@ -27,9 +27,11 @@ class MainViewController: UIViewController {
     }()
     var addButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+        let image = UIImage(named: "plus")
+        let tintedImage = image?.withRenderingMode(.alwaysTemplate)
+        button.setImage(tintedImage, for: .normal)
         button.tintColor = .green
-        button.contentMode = .scaleAspectFit
+        button.contentMode = .scaleAspectFill
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(addButtonClicked), for: .touchUpInside)
         return button
@@ -42,19 +44,21 @@ class MainViewController: UIViewController {
     }
     
     fileprivate func configureView() {
-        let stack = UIStackView(arrangedSubviews: [
-            collectionView, addButton
-        ])
-        stack.axis = .vertical
-        view.addSubview(stack)
-        stack.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
+        view.addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(500)
+            make.size.equalTo(CGSize(width: view.frame.width, height: 200))
+        }
+        view.addSubview(addButton)
+        addButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.size.equalTo(CGSize(width: 50, height: 50))
+            make.top.equalTo(collectionView.snp.bottom).offset(30)
         }
         view.addSubview(emtyImageView)
         emtyImageView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.leading.trailing.equalToSuperview()
             make.size.equalTo(CGSize(width: view.frame.width, height: 200))
         }
