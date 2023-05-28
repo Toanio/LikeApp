@@ -29,8 +29,7 @@ class MyTableViewCell: UITableViewCell {
     func configureView() {
         contentView.addSubview(myImageView)
         myImageView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(5)
-            make.size.equalTo(CGSize(width: 50, height: 50))
+            make.size.equalTo(CGSize(width: 50, height: 44))
         }
     }
     

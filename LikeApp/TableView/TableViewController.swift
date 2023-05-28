@@ -17,9 +17,16 @@ class TableViewController: UIViewController {
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Home"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .done, target: self, action: #selector(addPlusButton))
         tableView.delegate = self
         tableView.dataSource = self
         configueTableView()
+    }
+    
+    @objc func addPlusButton() {
+        let viewController = MainViewController()
+        navigationController?.pushViewController(viewController, animated: true)
     }
     
     func configueTableView() {
