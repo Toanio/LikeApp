@@ -10,7 +10,7 @@ import SnapKit
 
 class MyTableViewCell: UITableViewCell {
     static let identifier = "myTableCell"
-    let myImageView: UIImageView = {
+    var myImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(systemName: "plus")
         image.contentMode = .scaleAspectFit

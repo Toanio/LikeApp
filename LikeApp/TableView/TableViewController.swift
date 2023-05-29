@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 
 class TableViewController: UIViewController {
+    var image = [UIImage]()
     let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
@@ -26,6 +27,11 @@ class TableViewController: UIViewController {
     
     @objc func addPlusButton() {
         let viewController = MainViewController()
+        viewController.completion = { image in
+            self.image = image
+            print("picture \(self.image.count)")
+            self.tableView.reloadData()
+        }
         navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -38,11 +44,12 @@ class TableViewController: UIViewController {
 }
 extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return image.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: MyTableViewCell.identifier, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyTableViewCell.identifier, for: indexPath) as? MyTableViewCell else { fatalError()}
+        cell.myImageView.image = image[indexPath.item]
         return cell 
     }
 }

@@ -11,6 +11,7 @@ import Photos
 import PhotosUI
 
 class MainViewController: UIViewController {
+    var completion: (([UIImage]) -> ())?
     let emtyImageView: UIImageView = {
         var view = UIImageView()
         view.image = UIImage(systemName: "photo.artframe")
@@ -74,6 +75,11 @@ class MainViewController: UIViewController {
         vc.delegate = self
         present(vc, animated: true)
     }
+    
+    @objc func saveButtonClicked() {
+        completion?(images)
+        navigationController?.popViewController(animated: true)
+    }
 }
 
 extension MainViewController: PHPickerViewControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -108,6 +114,7 @@ extension MainViewController: PHPickerViewControllerDelegate, UICollectionViewDa
         group.notify(queue: .main) {
             if self.images.count != 0{
                 self.emtyImageView.isHidden = true
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(self.saveButtonClicked))
             }
             self.collectionView.reloadData()
         }
