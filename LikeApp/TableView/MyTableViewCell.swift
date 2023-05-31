@@ -10,6 +10,7 @@ import SnapKit
 
 class MyTableViewCell: UITableViewCell {
     static let identifier = "myTableCell"
+    var myLabel = UILabel()
     var myImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(systemName: "plus")
@@ -17,6 +18,7 @@ class MyTableViewCell: UITableViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureView()
@@ -29,7 +31,16 @@ class MyTableViewCell: UITableViewCell {
     func configureView() {
         contentView.addSubview(myImageView)
         myImageView.snp.makeConstraints { make in
-            make.size.equalTo(CGSize(width: 50, height: 44))
+            make.leading.equalToSuperview().inset(5)
+            make.top.bottom.equalToSuperview().inset(5)
+            make.width.equalTo(150)
+        }
+        contentView.addSubview(myLabel)
+        myLabel.snp.makeConstraints { make in
+            make.leading.equalTo(myImageView.snp.trailing).offset(5)
+            make.centerY.equalToSuperview()
+            make.width.equalTo(200)
+            make.height.equalTo(80)
         }
     }
     

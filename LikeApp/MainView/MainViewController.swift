@@ -11,13 +11,14 @@ import Photos
 import PhotosUI
 
 class MainViewController: UIViewController {
-    var completion: (([UIImage]) -> ())?
+    var completion: (([UIImage], [String]) -> ())?
+    private var images = [UIImage]()
+    var myText = ["Первая", "Вторая", "Третья"]
     let emtyImageView: UIImageView = {
         var view = UIImageView()
         view.image = UIImage(systemName: "photo.artframe")
         return view
     }()
-    private var images = [UIImage]()
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -49,7 +50,7 @@ class MainViewController: UIViewController {
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.leading.trailing.equalToSuperview()
-            make.size.equalTo(CGSize(width: view.frame.width, height: 200))
+            make.size.equalTo(CGSize(width: view.frame.width, height: 300))
         }
         view.addSubview(addButton)
         addButton.snp.makeConstraints { make in
@@ -77,7 +78,7 @@ class MainViewController: UIViewController {
     }
     
     @objc func saveButtonClicked() {
-        completion?(images)
+        completion?(images, myText)
         navigationController?.popViewController(animated: true)
     }
 }
@@ -89,11 +90,12 @@ extension MainViewController: PHPickerViewControllerDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.identifier, for: indexPath) as? ImageViewCell else { fatalError() }
         cell.imageView.image = images[indexPath.row]
+        cell.myTextField.text = myText[indexPath.row]
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width: CGFloat = collectionView.frame.width
-        return CGSize(width: width, height: 200)
+        return CGSize(width: width, height: collectionView.frame.height)
     }
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {

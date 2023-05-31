@@ -10,12 +10,14 @@ import SnapKit
 
 class TableViewController: UIViewController {
     var image = [UIImage]()
+    var someText = [String?]()
     let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
         table.register(MyTableViewCell.self, forCellReuseIdentifier: MyTableViewCell.identifier)
         return table
     }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Home"
@@ -27,8 +29,9 @@ class TableViewController: UIViewController {
     
     @objc func addPlusButton() {
         let viewController = MainViewController()
-        viewController.completion = { image in
+        viewController.completion = { image, text in
             self.image = image
+            self.someText = text
             print("picture \(self.image.count)")
             self.tableView.reloadData()
         }
@@ -50,6 +53,11 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyTableViewCell.identifier, for: indexPath) as? MyTableViewCell else { fatalError()}
         cell.myImageView.image = image[indexPath.item]
+        cell.myLabel.text = someText[indexPath.item]
         return cell 
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
     }
 }
