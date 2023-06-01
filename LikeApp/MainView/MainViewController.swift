@@ -11,7 +11,7 @@ import Photos
 import PhotosUI
 
 class MainViewController: UIViewController {
-    init(presenter: MainViewPresenterProtocol){
+    init(presenter: MainViewPresenterProtocol & PHPickerViewControllerDelegate){
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
     }
@@ -19,14 +19,14 @@ class MainViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    private let presenter: MainViewPresenterProtocol
-    static let emtyImageView: UIImageView = {
+    private let presenter: MainViewPresenterProtocol & PHPickerViewControllerDelegate
+    let emtyImageView: UIImageView = {
         var view = UIImageView()
         view.image = UIImage(systemName: "photo.artframe")
         return view
     }()
     //private var images = [UIImage]()
-    static let collectionView: UICollectionView = {
+    let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -53,8 +53,8 @@ class MainViewController: UIViewController {
     }
     
     fileprivate func configureView() {
-        view.addSubview(MainViewController.collectionView)
-        MainViewController.collectionView.snp.makeConstraints { make in
+        view.addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.leading.trailing.equalToSuperview()
             make.size.equalTo(CGSize(width: view.frame.width, height: 200))
@@ -63,16 +63,16 @@ class MainViewController: UIViewController {
         addButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.size.equalTo(CGSize(width: 50, height: 50))
-            make.top.equalTo(MainViewController.collectionView.snp.bottom).offset(30)
+            make.top.equalTo(collectionView.snp.bottom).offset(30)
         }
-        view.addSubview(MainViewController.emtyImageView)
-        MainViewController.emtyImageView.snp.makeConstraints { make in
+        view.addSubview(emtyImageView)
+        emtyImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.leading.trailing.equalToSuperview()
             make.size.equalTo(CGSize(width: view.frame.width, height: 200))
         }
-        MainViewController.collectionView.dataSource = self
-        MainViewController.collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.delegate = self
     }
     
     @objc func addButtonClicked() {
@@ -80,7 +80,8 @@ class MainViewController: UIViewController {
         openGalleryConfig.selectionLimit = 3
         openGalleryConfig.filter = .images
         let vc = PHPickerViewController(configuration: openGalleryConfig)
-        vc.delegate = MainViewPresenter()
+        vc.delegate = presenter
+        //vc.delegate = MainViewPresenter()
         present(vc, animated: true)
     }
 }
@@ -121,4 +122,15 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
 //            self.collectionView.reloadData()
 //        }
 //    }
+}
+extension MainViewController: MainViewProtocol {
+    func updateEmptyView() {
+        if presenter.images.count != 0{
+            emtyImageView.isHidden = true
+        }
+    }
+    
+    func reloadData() {
+        collectionView.reloadData()
+    }
 }

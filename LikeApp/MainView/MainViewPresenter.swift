@@ -12,7 +12,12 @@ protocol MainViewPresenterProtocol {
     var images: [UIImage] { get }
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult])
 }
+protocol MainViewProtocol {
+    func updateEmptyView()
+    func reloadData()
+}
 class MainViewPresenter: PHPickerViewControllerDelegate, MainViewPresenterProtocol {
+    var view: MainViewProtocol?
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
         let group = DispatchGroup()
@@ -29,10 +34,8 @@ class MainViewPresenter: PHPickerViewControllerDelegate, MainViewPresenterProtoc
             }
         }
         group.notify(queue: .main) {
-            if self.images.count != 0{
-                MainViewController.emtyImageView.isHidden = true
-            }
-            MainViewController.collectionView.reloadData()
+            self.view?.updateEmptyView()
+            self.view?.reloadData()
         }
     }
     var images = [UIImage]()
