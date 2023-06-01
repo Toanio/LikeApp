@@ -19,19 +19,10 @@ class ImageViewCell: UICollectionViewCell, UITextFieldDelegate {
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
-     var myTextField: UITextField = {
-        let text = UITextField()
-        text.placeholder = "Text"
-        text.backgroundColor = .lightGray
-        text.layer.cornerRadius = 5
-        return text
-    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(imageView)
-        addSubview(myTextField)
-        myTextField.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -44,12 +35,6 @@ class ImageViewCell: UICollectionViewCell, UITextFieldDelegate {
             make.top.equalToSuperview().offset(15)
             make.leading.trailing.equalToSuperview().inset(15)
             make.height.equalTo(200)
-        }
-        myTextField.snp.makeConstraints { make in
-            make.top.equalTo(imageView.snp.bottom).offset(15)
-            make.left.equalToSuperview().inset(15)
-            make.right.equalToSuperview().inset(15)
-            make.height.equalTo(50)
         }
     }
 }

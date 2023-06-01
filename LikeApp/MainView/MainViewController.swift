@@ -11,9 +11,8 @@ import Photos
 import PhotosUI
 
 class MainViewController: UIViewController {
-    var completion: (([UIImage], [String]) -> ())?
+    var completion: (([UIImage], String) -> ())?
     private var images = [UIImage]()
-    var myText = ["Первая", "Вторая", "Третья"]
     let emtyImageView: UIImageView = {
         var view = UIImageView()
         view.image = UIImage(systemName: "photo.artframe")
@@ -38,6 +37,15 @@ class MainViewController: UIViewController {
         button.addTarget(self, action: #selector(addButtonClicked), for: .touchUpInside)
         return button
     }()
+    
+    var descriptionTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "Text"
+        textField.backgroundColor = .lightGray
+        textField.layer.cornerRadius = 5
+        textField.isHidden = true
+        return textField
+    }()
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,13 +58,21 @@ class MainViewController: UIViewController {
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.leading.trailing.equalToSuperview()
-            make.size.equalTo(CGSize(width: view.frame.width, height: 300))
+            make.size.equalTo(CGSize(width: view.frame.width, height: 200))
+        }
+        descriptionTextField.delegate = self
+        view.addSubview(descriptionTextField)
+        descriptionTextField.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.bottom).offset(15)
+            make.left.equalToSuperview().inset(15)
+            make.right.equalToSuperview().inset(15)
+            make.height.equalTo(50)
         }
         view.addSubview(addButton)
         addButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.size.equalTo(CGSize(width: 50, height: 50))
-            make.top.equalTo(collectionView.snp.bottom).offset(30)
+            make.top.equalTo(descriptionTextField.snp.bottom).offset(30)
         }
         view.addSubview(emtyImageView)
         emtyImageView.snp.makeConstraints { make in
@@ -78,7 +94,7 @@ class MainViewController: UIViewController {
     }
     
     @objc func saveButtonClicked() {
-        completion?(images, myText)
+        completion?(images, descriptionTextField.text ?? "nil" )
         navigationController?.popViewController(animated: true)
     }
 }
@@ -90,7 +106,6 @@ extension MainViewController: PHPickerViewControllerDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.identifier, for: indexPath) as? ImageViewCell else { fatalError() }
         cell.imageView.image = images[indexPath.row]
-        cell.myTextField.text = myText[indexPath.row]
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -116,9 +131,16 @@ extension MainViewController: PHPickerViewControllerDelegate, UICollectionViewDa
         group.notify(queue: .main) {
             if self.images.count != 0{
                 self.emtyImageView.isHidden = true
+                self.descriptionTextField.isHidden = false
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(self.saveButtonClicked))
             }
             self.collectionView.reloadData()
         }
+    }
+}
+extension MainViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

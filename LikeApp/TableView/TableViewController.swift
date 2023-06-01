@@ -10,7 +10,7 @@ import SnapKit
 
 class TableViewController: UIViewController {
     var image = [UIImage]()
-    var someText = [String?]()
+    var someText = ""
     let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
@@ -53,7 +53,7 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyTableViewCell.identifier, for: indexPath) as? MyTableViewCell else { fatalError()}
         cell.myImageView.image = image[indexPath.item]
-        cell.myLabel.text = someText[indexPath.item]
+        cell.myLabel.text = someText
         return cell 
     }
     
