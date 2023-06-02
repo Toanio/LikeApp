@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 
 class ImageViewCell: UICollectionViewCell, UITextFieldDelegate {
+    
     static let identifier = "ImageViewCell"
     var someTexts = [String]()
     let imageView: UIImageView = {
