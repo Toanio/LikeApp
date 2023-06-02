@@ -19,13 +19,13 @@ class MainViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     private let presenter: MainViewPresenterProtocol & PHPickerViewControllerDelegate
     let emtyImageView: UIImageView = {
         var view = UIImageView()
         view.image = UIImage(systemName: "photo.artframe")
         return view
     }()
-    //private var images = [UIImage]()
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -42,7 +42,7 @@ class MainViewController: UIViewController {
         button.tintColor = .green
         button.contentMode = .scaleAspectFill
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(addButtonClicked), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(addButtonClicked), for: .touchUpInside)
         return button
     }()
         
@@ -81,7 +81,6 @@ class MainViewController: UIViewController {
         openGalleryConfig.filter = .images
         let vc = PHPickerViewController(configuration: openGalleryConfig)
         vc.delegate = presenter
-        //vc.delegate = MainViewPresenter()
         present(vc, animated: true)
     }
 }
@@ -99,29 +98,6 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
         let width: CGFloat = collectionView.frame.width
         return CGSize(width: width, height: 200)
     }
-    
-//    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-//        picker.dismiss(animated: true, completion: nil)
-//        let group = DispatchGroup()
-//        results.forEach { result in
-//            group.enter()
-//            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
-//                defer {
-//                    group.leave()
-//                }
-//                guard let image = reading as? UIImage, error == nil else {
-//                    return
-//                }
-//                self?.images.append(image)
-//            }
-//        }
-//        group.notify(queue: .main) {
-//            if presenter.images.count != 0{
-//                self.emtyImageView.isHidden = true
-//            }
-//            self.collectionView.reloadData()
-//        }
-//    }
 }
 extension MainViewController: MainViewProtocol {
     func updateEmptyView() {
