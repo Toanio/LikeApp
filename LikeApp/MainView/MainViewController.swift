@@ -11,8 +11,16 @@ import Photos
 import PhotosUI
 
 class MainViewController: UIViewController {
-    var completion: (([UIImage], String) -> ())?
-    private var images = [UIImage]()
+    init(presenter: MainViewPresenterProtocol & PHPickerViewControllerDelegate){
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private let presenter: MainViewPresenterProtocol & PHPickerViewControllerDelegate
     let emtyImageView: UIImageView = {
         var view = UIImageView()
         view.image = UIImage(systemName: "photo.artframe")
@@ -34,7 +42,7 @@ class MainViewController: UIViewController {
         button.tintColor = .green
         button.contentMode = .scaleAspectFill
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(addButtonClicked), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(addButtonClicked), for: .touchUpInside)
         return button
     }()
     
@@ -89,7 +97,7 @@ class MainViewController: UIViewController {
         openGalleryConfig.selectionLimit = 3
         openGalleryConfig.filter = .images
         let vc = PHPickerViewController(configuration: openGalleryConfig)
-        vc.delegate = self
+        vc.delegate = presenter
         present(vc, animated: true)
     }
     
@@ -99,43 +107,29 @@ class MainViewController: UIViewController {
     }
 }
 
-extension MainViewController: PHPickerViewControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension MainViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return images.count
+        return presenter.images.count
 }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.identifier, for: indexPath) as? ImageViewCell else { fatalError() }
-        cell.imageView.image = images[indexPath.row]
+        cell.imageView.image = presenter.images[indexPath.row]
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width: CGFloat = collectionView.frame.width
         return CGSize(width: width, height: collectionView.frame.height)
     }
+}
+extension MainViewController: MainViewProtocol {
+    func updateEmptyView() {
+        if presenter.images.count != 0{
+            emtyImageView.isHidden = true
+        }
+    }
     
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: nil)
-        let group = DispatchGroup()
-        results.forEach { result in
-            group.enter()
-            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
-                defer {
-                    group.leave()
-                }
-                guard let image = reading as? UIImage, error == nil else {
-                    return
-                }
-                self?.images.append(image)
-            }
-        }
-        group.notify(queue: .main) {
-            if self.images.count != 0{
-                self.emtyImageView.isHidden = true
-                self.descriptionTextField.isHidden = false
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(self.saveButtonClicked))
-            }
-            self.collectionView.reloadData()
-        }
+    func reloadData() {
+        collectionView.reloadData()
     }
 }
 extension MainViewController: UITextFieldDelegate {
