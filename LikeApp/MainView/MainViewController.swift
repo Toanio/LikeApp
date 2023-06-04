@@ -45,6 +45,15 @@ class MainViewController: UIViewController {
         button.addTarget(nil, action: #selector(addButtonClicked), for: .touchUpInside)
         return button
     }()
+    
+    var descriptionTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "Text"
+        textField.backgroundColor = .lightGray
+        textField.layer.cornerRadius = 5
+        textField.isHidden = true
+        return textField
+    }()
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,11 +68,19 @@ class MainViewController: UIViewController {
             make.leading.trailing.equalToSuperview()
             make.size.equalTo(CGSize(width: view.frame.width, height: 200))
         }
+        descriptionTextField.delegate = self
+        view.addSubview(descriptionTextField)
+        descriptionTextField.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.bottom).offset(15)
+            make.left.equalToSuperview().inset(15)
+            make.right.equalToSuperview().inset(15)
+            make.height.equalTo(50)
+        }
         view.addSubview(addButton)
         addButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.size.equalTo(CGSize(width: 50, height: 50))
-            make.top.equalTo(collectionView.snp.bottom).offset(30)
+            make.top.equalTo(descriptionTextField.snp.bottom).offset(30)
         }
         view.addSubview(emtyImageView)
         emtyImageView.snp.makeConstraints { make in
@@ -83,6 +100,11 @@ class MainViewController: UIViewController {
         vc.delegate = presenter
         present(vc, animated: true)
     }
+    
+    @objc func saveButtonClicked() {
+        completion?(images, descriptionTextField.text ?? "nil" )
+        navigationController?.popViewController(animated: true)
+    }
 }
 
 extension MainViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -96,7 +118,7 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width: CGFloat = collectionView.frame.width
-        return CGSize(width: width, height: 200)
+        return CGSize(width: width, height: collectionView.frame.height)
     }
 }
 extension MainViewController: MainViewProtocol {
@@ -108,5 +130,11 @@ extension MainViewController: MainViewProtocol {
     
     func reloadData() {
         collectionView.reloadData()
+    }
+}
+extension MainViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
