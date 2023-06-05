@@ -105,7 +105,9 @@ class MainViewController: UIViewController {
     
     @objc func saveButtonClicked() {
         print("save clicked")
-        delegate?.sendData(image: presenter.images, text: descriptionTextField.text ?? "nil")
+        let vc = TableViewController()
+        //self.delegate = vc
+        vc.sendData(image: presenter.images, text: descriptionTextField.text ?? "nidssdfsedl")
         navigationController?.popViewController(animated: true)
     }
 }
@@ -128,6 +130,7 @@ extension MainViewController: MainViewProtocol {
     func updateEmptyView() {
         if presenter.images.count != 0{
             emtyImageView.isHidden = true
+            descriptionTextField.isHidden = false
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveButtonClicked))
         }
     }

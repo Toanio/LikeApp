@@ -28,6 +28,11 @@ class TableViewController: UIViewController {
         configueTableView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    
     @objc func addPlusButton() {
         let presenter = MainViewPresenter()
         let viewController = MainViewController(presenter: presenter)
@@ -62,5 +67,6 @@ extension TableViewController: MainViewDelegate {
     func sendData(image: [UIImage], text: String) {
         self.image = image
         self.someText = text
+        print(text)
     }
 }
