@@ -106,9 +106,10 @@ class MainViewController: UIViewController {
     @objc func saveButtonClicked() {
         print("save clicked")
         let vc = TableViewController()
-        //self.delegate = vc
-        vc.sendData(image: presenter.images, text: descriptionTextField.text ?? "nidssdfsedl")
+        delegate = vc
+        delegate?.sendData(image: presenter.images, text: descriptionTextField.text ?? "")
         navigationController?.popViewController(animated: true)
+        vc.tableView.reloadData()
     }
 }
 
