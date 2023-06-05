@@ -18,6 +18,8 @@ protocol MainViewProtocol {
 }
 class MainViewPresenter: PHPickerViewControllerDelegate, MainViewPresenterProtocol {
     var view: MainViewProtocol?
+    var images = [UIImage]()
+    
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
         let group = DispatchGroup()
@@ -38,7 +40,5 @@ class MainViewPresenter: PHPickerViewControllerDelegate, MainViewPresenterProtoc
             self.view?.reloadData()
         }
     }
-    var images = [UIImage]()
-  
 }
     

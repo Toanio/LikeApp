@@ -20,6 +20,7 @@ class TableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .red
         navigationItem.title = "Home"
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .done, target: self, action: #selector(addPlusButton))
         tableView.delegate = self
@@ -28,13 +29,13 @@ class TableViewController: UIViewController {
     }
     
     @objc func addPlusButton() {
-        let viewController = MainViewController()
-        viewController.completion = { image, text in
-            self.image = image
-            self.someText = text
-            print("picture \(self.image.count)")
-            self.tableView.reloadData()
-        }
+        let viewController = MainViewController(presenter: MainViewPresenter())
+//        viewController.complition = { image, text in
+//            self.image = image
+//            self.someText = text
+//            print("picture \(self.image.count)")
+//            self.tableView.reloadData()
+//        }
         navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -59,5 +60,11 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
+    }
+}
+extension TableViewController: MainViewDelegate {
+    func sendData(image: [UIImage], text: String) {
+        self.image = image
+        self.someText = text
     }
 }

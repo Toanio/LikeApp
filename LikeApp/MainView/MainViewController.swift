@@ -9,7 +9,9 @@ import UIKit
 import SnapKit
 import Photos
 import PhotosUI
-
+protocol MainViewDelegate {
+    func sendData(image: [UIImage], text: String)
+}
 class MainViewController: UIViewController {
     init(presenter: MainViewPresenterProtocol & PHPickerViewControllerDelegate){
         self.presenter = presenter
@@ -19,7 +21,7 @@ class MainViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    var delegate: MainViewDelegate?
     private let presenter: MainViewPresenterProtocol & PHPickerViewControllerDelegate
     let emtyImageView: UIImageView = {
         var view = UIImageView()
@@ -102,7 +104,7 @@ class MainViewController: UIViewController {
     }
     
     @objc func saveButtonClicked() {
-        completion?(images, descriptionTextField.text ?? "nil" )
+        delegate?.sendData(image: presenter.images, text: descriptionTextField.text ?? "nil")
         navigationController?.popViewController(animated: true)
     }
 }
