@@ -29,13 +29,9 @@ class TableViewController: UIViewController {
     }
     
     @objc func addPlusButton() {
-        let viewController = MainViewController(presenter: MainViewPresenter())
-//        viewController.complition = { image, text in
-//            self.image = image
-//            self.someText = text
-//            print("picture \(self.image.count)")
-//            self.tableView.reloadData()
-//        }
+        let presenter = MainViewPresenter()
+        let viewController = MainViewController(presenter: presenter)
+        presenter.view = viewController
         navigationController?.pushViewController(viewController, animated: true)
     }
     
