@@ -9,6 +9,10 @@ import UIKit
 import SnapKit
 import Photos
 import PhotosUI
+protocol MainViewPresenterProtocol {
+    var images: [UIImage] { get }
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult])
+}
 protocol MainViewDelegate {
     func sendData(image: [UIImage], text: String)
 }
@@ -105,11 +109,8 @@ class MainViewController: UIViewController {
     
     @objc func saveButtonClicked() {
         print("save clicked")
-        let vc = TableViewController()
-        delegate = vc
         delegate?.sendData(image: presenter.images, text: descriptionTextField.text ?? "")
         navigationController?.popViewController(animated: true)
-        vc.tableView.reloadData()
     }
 }
 

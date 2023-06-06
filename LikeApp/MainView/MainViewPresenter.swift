@@ -8,10 +8,7 @@
 import Foundation
 import Photos
 import PhotosUI
-protocol MainViewPresenterProtocol {
-    var images: [UIImage] { get }
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult])
-}
+
 protocol MainViewProtocol {
     func updateEmptyView()
     func reloadData()

@@ -37,6 +37,7 @@ class TableViewController: UIViewController {
         let presenter = MainViewPresenter()
         let viewController = MainViewController(presenter: presenter)
         presenter.view = viewController
+        viewController.delegate = self
         navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -67,6 +68,5 @@ extension TableViewController: MainViewDelegate {
     func sendData(image: [UIImage], text: String) {
         self.image = image
         self.someText = text
-        print(text)
     }
 }
