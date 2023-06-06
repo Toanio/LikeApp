@@ -13,7 +13,6 @@ class MyTableViewCell: UITableViewCell {
     var myLabel = UILabel()
     var myImageView: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(systemName: "plus")
         image.contentMode = .scaleAspectFit
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
@@ -43,5 +42,4 @@ class MyTableViewCell: UITableViewCell {
             make.height.equalTo(80)
         }
     }
-    
 }

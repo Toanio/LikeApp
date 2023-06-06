@@ -9,8 +9,7 @@ import UIKit
 import SnapKit
 
 class TableViewController: UIViewController {
-    var image = [UIImage]()
-    var someText = ""
+    var model = [Model]()
     let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
@@ -50,13 +49,13 @@ class TableViewController: UIViewController {
 }
 extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return image.count
+        return model.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyTableViewCell.identifier, for: indexPath) as? MyTableViewCell else { fatalError()}
-        cell.myImageView.image = image[indexPath.item]
-        cell.myLabel.text = someText
+        cell.myImageView.image = model[indexPath.row].images.first
+        cell.myLabel.text = model[indexPath.row].text
         return cell 
     }
     
@@ -66,7 +65,6 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
 }
 extension TableViewController: MainViewDelegate {
     func sendData(image: [UIImage], text: String) {
-        self.image = image
-        self.someText = text
+        model.append(Model(images: image, text: text))
     }
 }
