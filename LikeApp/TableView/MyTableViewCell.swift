@@ -10,7 +10,8 @@ import SnapKit
 
 class MyTableViewCell: UITableViewCell {
     static let identifier = "myTableCell"
-    var myLabel = UILabel()
+    var descriptionText = UILabel()
+    var imageCountText = UILabel()
     var myImageView: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFit
@@ -34,8 +35,13 @@ class MyTableViewCell: UITableViewCell {
             make.top.bottom.equalToSuperview().inset(5)
             make.width.equalTo(150)
         }
-        contentView.addSubview(myLabel)
-        myLabel.snp.makeConstraints { make in
+        
+        imageCountText.font = UIFont.systemFont(ofSize: 10)
+        
+        let stack = UIStackView(arrangedSubviews: [descriptionText, imageCountText ])
+        stack.axis = .vertical
+        contentView.addSubview(stack)
+        stack.snp.makeConstraints { make in
             make.leading.equalTo(myImageView.snp.trailing).offset(5)
             make.centerY.equalToSuperview()
             make.width.equalTo(200)

@@ -58,7 +58,8 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyTableViewCell.identifier, for: indexPath) as? MyTableViewCell else { fatalError()}
         cell.myImageView.image = model[indexPath.row].images.first
-        cell.myLabel.text = model[indexPath.row].text
+        cell.descriptionText.text = model[indexPath.row].text
+        cell.imageCountText.text = "Колличество картинок \(model[indexPath.row].images.count)"
         return cell 
     }
     
