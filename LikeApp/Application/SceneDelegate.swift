@@ -13,7 +13,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        let viewController = TableViewController()
+        let presenter = TableViewPresenter()
+        let viewController = TableViewController(presenter: presenter)
         let navController = UINavigationController(rootViewController: viewController)
         window.rootViewController = navController
         window.makeKeyAndVisible()

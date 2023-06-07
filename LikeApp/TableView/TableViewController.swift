@@ -7,12 +7,26 @@
 
 import UIKit
 import SnapKit
+protocol TableViewPresenterProtocol {
+    var model: [Model] { get set }
+}
+
 protocol TableViewDelegate {
     func sendDataToView(model: Model)
 }
+
 class TableViewController: UIViewController {
-    var model = [Model]()
+    init(presenter: TableViewPresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var delegate: TableViewDelegate?
+    var presenter: TableViewPresenterProtocol
     let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
@@ -25,8 +39,6 @@ class TableViewController: UIViewController {
         view.backgroundColor = .red
         navigationItem.title = "Home"
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .done, target: self, action: #selector(addPlusButton))
-        tableView.delegate = self
-        tableView.dataSource = self
         configueTableView()
     }
     
@@ -44,6 +56,8 @@ class TableViewController: UIViewController {
     }
     
     func configueTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -52,14 +66,14 @@ class TableViewController: UIViewController {
 }
 extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return model.count
+        return presenter.model.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyTableViewCell.identifier, for: indexPath) as? MyTableViewCell else { fatalError()}
-        cell.myImageView.image = model[indexPath.row].images.first
-        cell.descriptionText.text = model[indexPath.row].text
-        cell.imageCountText.text = "Колличество картинок \(model[indexPath.row].images.count)"
+        cell.myImageView.image = presenter.model[indexPath.row].images.first
+        cell.descriptionText.text = presenter.model[indexPath.row].text
+        cell.imageCountText.text = "Колличество картинок \(presenter.model[indexPath.row].images.count)"
         return cell 
     }
     
@@ -70,12 +84,12 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = DetailImageViewController()
         self.delegate = vc
-        delegate?.sendDataToView(model: model[indexPath.row])
+        delegate?.sendDataToView(model: presenter.model[indexPath.row])
         navigationController?.pushViewController(vc, animated: true)
     }
 }
 extension TableViewController: MainViewDelegate {
     func sendData(image: [UIImage], text: String) {
-        model.append(Model(images: image, text: text))
+        presenter.model.append(Model(images: image, text: text))
     }
 }
