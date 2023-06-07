@@ -35,7 +35,7 @@ class ImageViewCell: UICollectionViewCell, UITextFieldDelegate {
         imageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(15)
             make.leading.trailing.equalToSuperview().inset(15)
-            make.height.equalTo(200)
+            make.height.equalTo(300)
         }
     }
 }

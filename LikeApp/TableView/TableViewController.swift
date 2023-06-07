@@ -7,9 +7,12 @@
 
 import UIKit
 import SnapKit
-
+protocol TableViewDelegate {
+    func sendDataToView(model: Model)
+}
 class TableViewController: UIViewController {
     var model = [Model]()
+    var delegate: TableViewDelegate?
     let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
@@ -61,6 +64,13 @@ extension TableViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = DetailImageViewController()
+        self.delegate = vc
+        delegate?.sendDataToView(model: model[indexPath.row])
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 extension TableViewController: MainViewDelegate {
